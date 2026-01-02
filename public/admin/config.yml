@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: qilingzon/twilight1
+  repo: qilingzon/eo1
   branch: main
   site_domain: t.aniv.cn
   base_url: https://t.aniv.cn
