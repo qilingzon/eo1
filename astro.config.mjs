@@ -98,6 +98,7 @@ export default defineConfig({
                     "person",
                     "group",
                     "info",
+                    "history-rounded",
                 ],
                 "fa6-brands": [
                     "github",
