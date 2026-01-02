@@ -100,6 +100,7 @@ export default defineConfig({
                     "info",
                     "history-rounded",
                     "schedule-outline-rounded",
+                    "monitoring",
                 ],
                 "fa6-brands": [
                     "github",
