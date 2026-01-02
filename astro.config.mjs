@@ -56,7 +56,7 @@ export default defineConfig({
     integrations: [
         decapCmsOauth({
             decapCMSVersion: "3.4.4",
-            oauthDisabled: false, // OAuth enabled - requires environment variables
+            oauthDisabled: true, // 使用自定义 OAuth 路由
         }),
         tailwind({
             nesting: true,
