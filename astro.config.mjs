@@ -7,6 +7,7 @@ import swup from "@swup/astro";
 import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
 import cloudflarePages from "@astrojs/cloudflare";
+import decapCmsOauth from "astro-decap-cms-oauth";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
@@ -137,6 +138,7 @@ export default defineConfig({
         }),
         svelte(),
         sitemap(),
+        decapCmsOauth(),
     ],
     markdown: {
         remarkPlugins: [

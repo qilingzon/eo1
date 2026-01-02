@@ -2,8 +2,7 @@ backend:
   name: github
   repo: qilingzon/eo1
   branch: main
-  auth_type: pkce
-  app_id: Ov23liHRW4T7oJ3hn9A9
+  auth_endpoint: /oauth
 # 语言设置
 locale: "zh_Hans"
 
