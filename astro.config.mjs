@@ -5,7 +5,6 @@ import svelte from "@astrojs/svelte";
 import tailwind from "@astrojs/tailwind";
 import swup from "@swup/astro";
 import sitemap from "@astrojs/sitemap";
-import vercel from "@astrojs/vercel";
 import cloudflarePages from "@astrojs/cloudflare";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
@@ -31,21 +30,8 @@ import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 
 
 // https://astro.build/config
-// Choose adapter depending on deployment environment
-// CF_PAGES: Cloudflare Pages
-// EDGEONE: Tencent Cloud EdgeOne Pages (similar to Cloudflare)
-// VERCEL: Vercel
-const getAdapter = () => {
-    if (process.env.CF_PAGES || process.env.EDGEONE) {
-        return cloudflarePages();
-    }
-    if (process.env.VERCEL) {
-        return vercel({ mode: "serverless" });
-    }
-    // Default to Cloudflare adapter for edge platforms
-    return cloudflarePages();
-};
-const adapter = getAdapter();
+// Cloudflare Pages adapter (also works for EdgeOne)
+const adapter = cloudflarePages();
 
 export default defineConfig({
     site: siteConfig.siteURL,
@@ -78,11 +64,57 @@ export default defineConfig({
         }),
         icon({
             include: {
-                "preprocess: vitePreprocess(),": ["*"],
-                "fa6-brands": ["*"],
-                "fa6-regular": ["*"],
-                "fa6-solid": ["*"],
-                mdi: ["*"],
+                // 只包含实际使用的图标，减少构建体积
+                "material-symbols": [
+                    "keyboard-arrow-up-rounded",
+                    "chevron-left-rounded",
+                    "chevron-right-rounded",
+                    "more-horiz",
+                    "keyboard-arrow-down-rounded",
+                    "home-pin-outline",
+                    "palette-outline",
+                    "menu-rounded",
+                    "error-outline",
+                    "home",
+                    "sentiment-sad",
+                    "search-off",
+                    "calendar-today-outline-rounded",
+                    "edit-calendar-outline-rounded",
+                    "book-2-outline-rounded",
+                    "tag-rounded",
+                    "visibility-outline-rounded",
+                    "rss-feed",
+                    "link",
+                    "article",
+                    "help-outline",
+                    "notes-rounded",
+                    "archive",
+                    "work",
+                    "psychology",
+                    "timeline",
+                    "book",
+                    "photo-library",
+                    "movie",
+                    "person",
+                    "group",
+                    "info",
+                ],
+                "fa6-brands": [
+                    "github",
+                    "bilibili",
+                    "creative-commons",
+                ],
+                "fa6-solid": [
+                    "arrow-up-right-from-square",
+                    "xmark",
+                    "eye",
+                ],
+                "fa6-regular": [
+                    "address-card",
+                ],
+                mdi: [
+                    "pin",
+                ],
             },
         }),
         expressiveCode({
