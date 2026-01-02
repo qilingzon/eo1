@@ -1,15 +1,11 @@
 // OAuth 回调端点
-// 处理 GitHub OAuth 回调，交换 code 获取 token
+export const prerender = false;
 
-export async function onRequest(context) {
-  const { request, env } = context;
+export async function GET({ request }) {
   const url = new URL(request.url);
-
   const code = url.searchParams.get('code');
-  const state = url.searchParams.get('state');
   const error = url.searchParams.get('error');
 
-  // 检查是否有错误
   if (error) {
     return new Response(getErrorPage(error), {
       status: 400,
@@ -24,8 +20,8 @@ export async function onRequest(context) {
     });
   }
 
-  const clientId = env.GITHUB_CLIENT_ID;
-  const clientSecret = env.GITHUB_CLIENT_SECRET;
+  const clientId = import.meta.env.GITHUB_CLIENT_ID;
+  const clientSecret = import.meta.env.GITHUB_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
     return new Response(getErrorPage('Server configuration error'), {
@@ -35,7 +31,6 @@ export async function onRequest(context) {
   }
 
   try {
-    // 交换 code 获取 access token
     const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
       method: 'POST',
       headers: {
@@ -58,13 +53,12 @@ export async function onRequest(context) {
       });
     }
 
-    // 返回成功页面，通过 postMessage 传递 token 给 CMS
     return new Response(getSuccessPage('github', tokenData.access_token), {
       status: 200,
       headers: { 'Content-Type': 'text/html' }
     });
 
-  } catch (err) {
+  } catch (err: any) {
     return new Response(getErrorPage(`Token exchange failed: ${err.message}`), {
       status: 500,
       headers: { 'Content-Type': 'text/html' }
@@ -72,7 +66,7 @@ export async function onRequest(context) {
   }
 }
 
-function getSuccessPage(provider, token) {
+function getSuccessPage(provider: string, token: string) {
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -92,7 +86,7 @@ function getSuccessPage(provider, token) {
         }
       }
       sendMessage({ token: '${token}', provider: '${provider}' });
-      window.close();
+      setTimeout(function() { window.close(); }, 1000);
     })();
   </script>
   <p>Authorization successful. This window should close automatically.</p>
@@ -100,7 +94,7 @@ function getSuccessPage(provider, token) {
 </html>`;
 }
 
-function getErrorPage(message) {
+function getErrorPage(message: string) {
   return `<!DOCTYPE html>
 <html>
 <head>

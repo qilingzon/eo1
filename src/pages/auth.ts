@@ -1,8 +1,7 @@
 // OAuth 认证初始化端点
-// 处理 /auth?provider=github 请求
+export const prerender = false;
 
-export async function onRequest(context) {
-  const { request, env } = context;
+export async function GET({ request }) {
   const url = new URL(request.url);
   const provider = url.searchParams.get('provider');
 
@@ -10,7 +9,7 @@ export async function onRequest(context) {
     return new Response('Unsupported provider', { status: 400 });
   }
 
-  const clientId = env.GITHUB_CLIENT_ID;
+  const clientId = import.meta.env.GITHUB_CLIENT_ID;
   if (!clientId) {
     return new Response('Missing GITHUB_CLIENT_ID', { status: 500 });
   }
@@ -24,9 +23,6 @@ export async function onRequest(context) {
   githubAuthUrl.searchParams.set('redirect_uri', `${url.origin}/callback`);
   githubAuthUrl.searchParams.set('scope', 'repo,user');
   githubAuthUrl.searchParams.set('state', state);
-
-  // 设置 state cookie 用于验证回调
-  const response = Response.redirect(githubAuthUrl.toString(), 302);
 
   return new Response(null, {
     status: 302,
