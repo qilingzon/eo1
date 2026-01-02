@@ -5,8 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex" />
   <title>Content Manager</title>
+  <style>
+    /* 隐藏 Sign in with GitHub OAuth 按钮，只保留 Token 登录 */
+    [class*="oauth"],
+    button[class*="github"]:not([class*="token"]),
+    .sui.primary.large {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
   <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+  <script>
+    // 等待 CMS 加载后隐藏 OAuth 按钮
+    const hideOAuthButton = () => {
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(btn => {
+        const text = btn.textContent?.toLowerCase() || '';
+        if (text.includes('sign in with') || text.includes('github') || text.includes('登录')) {
+          // 保留包含 token 的按钮
+          if (!text.includes('token') && !text.includes('令牌')) {
+            btn.style.display = 'none';
+          }
+        }
+      });
+    };
+
+    // 使用 MutationObserver 监听 DOM 变化
+    const observer = new MutationObserver((mutations) => {
+      hideOAuthButton();
+    });
+
+    // 页面加载完成后开始观察
+    document.addEventListener('DOMContentLoaded', () => {
+      observer.observe(document.body, { childList: true, subtree: true });
+      // 初始隐藏
+      setTimeout(hideOAuthButton, 500);
+      setTimeout(hideOAuthButton, 1000);
+      setTimeout(hideOAuthButton, 2000);
+    });
+  </script>
 </body>
 </html>
