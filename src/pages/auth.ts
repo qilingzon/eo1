@@ -1,7 +1,9 @@
 // OAuth 认证初始化端点
 export const prerender = false;
 
-export async function GET({ request }) {
+import type { APIContext } from 'astro';
+
+export async function GET({ request, locals }: APIContext) {
   const url = new URL(request.url);
   const provider = url.searchParams.get('provider');
 
@@ -9,7 +11,10 @@ export async function GET({ request }) {
     return new Response('Unsupported provider', { status: 400 });
   }
 
-  const clientId = import.meta.env.GITHUB_CLIENT_ID;
+  // Cloudflare 环境变量通过 locals.runtime.env 访问
+  const runtime = (locals as any).runtime;
+  const clientId = runtime?.env?.GITHUB_CLIENT_ID || import.meta.env.GITHUB_CLIENT_ID;
+
   if (!clientId) {
     return new Response('Missing GITHUB_CLIENT_ID', { status: 500 });
   }

@@ -1,7 +1,9 @@
 // OAuth 回调端点
 export const prerender = false;
 
-export async function GET({ request }) {
+import type { APIContext } from 'astro';
+
+export async function GET({ request, locals }: APIContext) {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
   const error = url.searchParams.get('error');
@@ -20,8 +22,10 @@ export async function GET({ request }) {
     });
   }
 
-  const clientId = import.meta.env.GITHUB_CLIENT_ID;
-  const clientSecret = import.meta.env.GITHUB_CLIENT_SECRET;
+  // Cloudflare 环境变量通过 locals.runtime.env 访问
+  const runtime = (locals as any).runtime;
+  const clientId = runtime?.env?.GITHUB_CLIENT_ID || import.meta.env.GITHUB_CLIENT_ID;
+  const clientSecret = runtime?.env?.GITHUB_CLIENT_SECRET || import.meta.env.GITHUB_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
     return new Response(getErrorPage('Server configuration error'), {
