@@ -41,7 +41,7 @@ export const ALL: APIRoute = async ({ request, params }) => {
 
   // GitHub API 要求 User-Agent
   if (!headers.has('User-Agent')) {
-    headers.set('User-Agent', 'Decap-CMS-Proxy');
+    headers.set('User-Agent', 'Sveltia-CMS-Proxy');
   }
 
   try {
