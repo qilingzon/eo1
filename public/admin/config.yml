@@ -2,7 +2,8 @@ backend:
   name: github
   repo: qilingzon/eo1
   branch: main
-  auth_endpoint: /oauth
+  base_url: https://t3.aniv.cn
+  auth_endpoint: auth
 # 语言设置
 locale: "zh_Hans"
 
