@@ -138,7 +138,9 @@ export default defineConfig({
         }),
         svelte(),
         sitemap(),
-        decapCmsOauth(),
+        decapCmsOauth({
+            adminDisabled: true,  // 不生成 admin 页面，使用我们自定义的 Sveltia CMS
+        }),
     ],
     markdown: {
         remarkPlugins: [
