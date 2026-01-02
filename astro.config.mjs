@@ -99,6 +99,7 @@ export default defineConfig({
                     "group",
                     "info",
                     "history-rounded",
+                    "schedule-outline-rounded",
                 ],
                 "fa6-brands": [
                     "github",
