@@ -27,18 +27,6 @@ const processedLinks = Astro.props.links.map(
 ---
 
 <div id="nav-menu-panel" class:list={["float-panel float-panel-closed fixed transition-all right-4 px-2 py-2 max-h-[80vh] overflow-y-auto"]}>
-    <!-- 快捷链接图标 - 移动端显示 -->
-    <div class="flex items-center justify-center gap-1 py-2 mb-2 border-b border-black/10 dark:border-white/10">
-        <a href="https://p.aniv.cn" target="_blank" rel="noopener noreferrer" aria-label="网站流量监控" class="btn-plain scale-animation rounded-lg h-10 w-10 active:scale-90 flex items-center justify-center">
-            <Icon name="material-symbols:monitoring" class="text-[1.25rem]"></Icon>
-        </a>
-        <a href="https://mail.aniv.cn" target="_blank" rel="noopener noreferrer" aria-label="邮箱" class="btn-plain scale-animation rounded-lg h-10 w-10 active:scale-90 flex items-center justify-center">
-            <Icon name="material-symbols:mail-outline" class="text-[1.25rem]"></Icon>
-        </a>
-        <a href="https://www.aniv.cn" target="_blank" rel="noopener noreferrer" aria-label="导航" class="btn-plain scale-animation rounded-lg h-10 w-10 active:scale-90 flex items-center justify-center">
-            <Icon name="material-symbols:explore-outline" class="text-[1.25rem]"></Icon>
-        </a>
-    </div>
     {processedLinks.map((link) => (
         <div class="mobile-menu-item">
             {link.children && link.children.length > 0 ? (

@@ -47,23 +47,23 @@ let links: NavBarLink[] = navBarConfig.links.map(
         </a>
 
         <!-- 中间：导航链接 + 快捷图标 -->
-        <div class="hidden sm:flex items-center gap-2">
+        <div class="flex items-center gap-2">
             <!-- 导航链接 - 仅桌面端显示 -->
             <div class="hidden md:flex items-center navbar-nav-links">
                 {links.map((l) => {
                     return <DropdownMenu link={l} />;
                 })}
             </div>
-            <!-- 快捷链接图标 - 平板和桌面端显示 -->
+            <!-- 快捷链接图标 - 所有设备显示 -->
             <div class="flex items-center">
-                <a href="https://p.aniv.cn" target="_blank" rel="noopener noreferrer" aria-label="网站流量监控" class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 flex items-center justify-center">
-                    <Icon name="material-symbols:monitoring" class="text-[1.25rem]"></Icon>
+                <a href="https://p.aniv.cn" target="_blank" rel="noopener noreferrer" aria-label="网站流量监控" class="btn-plain scale-animation rounded-lg h-10 w-10 sm:h-11 sm:w-11 active:scale-90 flex items-center justify-center">
+                    <Icon name="material-symbols:monitoring" class="text-[1.1rem] sm:text-[1.25rem]"></Icon>
                 </a>
-                <a href="https://mail.aniv.cn" target="_blank" rel="noopener noreferrer" aria-label="邮箱" class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 flex items-center justify-center">
-                    <Icon name="material-symbols:mail-outline" class="text-[1.25rem]"></Icon>
+                <a href="https://mail.aniv.cn" target="_blank" rel="noopener noreferrer" aria-label="邮箱" class="btn-plain scale-animation rounded-lg h-10 w-10 sm:h-11 sm:w-11 active:scale-90 flex items-center justify-center">
+                    <Icon name="material-symbols:mail-outline" class="text-[1.1rem] sm:text-[1.25rem]"></Icon>
                 </a>
-                <a href="https://www.aniv.cn" target="_blank" rel="noopener noreferrer" aria-label="导航" class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90 flex items-center justify-center">
-                    <Icon name="material-symbols:explore-outline" class="text-[1.25rem]"></Icon>
+                <a href="https://www.aniv.cn" target="_blank" rel="noopener noreferrer" aria-label="导航" class="btn-plain scale-animation rounded-lg h-10 w-10 sm:h-11 sm:w-11 active:scale-90 flex items-center justify-center">
+                    <Icon name="material-symbols:explore-outline" class="text-[1.1rem] sm:text-[1.25rem]"></Icon>
                 </a>
             </div>
         </div>
