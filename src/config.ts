@@ -30,7 +30,7 @@ export const siteConfig: SiteConfig = {
     // 站点 URL（以斜杠结尾）
     siteURL: "https://i.aniv.cn/", // 请替换为你的站点 URL 并以斜杠结尾
     // 站点标题
-    title: "Aniv Blog",
+    title: "生活随笔分享",
     // 站点副标题
     subtitle: "Blog Template",
     // 语言配置
@@ -114,7 +114,7 @@ export const siteConfig: SiteConfig = {
                 // 在主页显示文本
                 enable: true,
                 // 主标题
-                title: "Aniv Blog",
+                title: "生活随笔分享",
                 // 副标题，支持单个字符串或字符串数组
                 subtitle: [
                     "Illuminate Our Paths",
