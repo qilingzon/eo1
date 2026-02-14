@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>内容管理</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #quick-login-panel {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      margin: 20px;
+    }
+    
+    h1 {
+      margin: 0 0 10px 0;
+      font-size: 28px;
+      color: #333;
+      text-align: center;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    
+    .section {
+      margin-bottom: 25px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    
+    .section-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-secondary {
+      background: #28a745;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #218838;
+    }
+    
+    .btn-link {
+      background: transparent;
+      color: #667eea;
+      text-decoration: underline;
+      padding: 8px;
+    }
+    
+    .error {
+      color: #dc3545;
+      font-size: 13px;
+      margin-top: 8px;
+      display: none;
+    }
+    
+    .success {
+      color: #28a745;
+      font-size: 13px;
+      margin-top: 8px;
+      display: none;
+    }
+    
+    .steps {
+      background: rgba(102, 126, 234, 0.1);
+      padding: 15px;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-top: 15px;
+      display: none;
+    }
+    
+    .steps div {
+      margin: 5px 0;
+    }
+    
+    code {
+      background: rgba(0,0,0,0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    
+    #cms-container {
+      display: none;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div id="quick-login-panel">
+    <h1>🚀 博客后台</h1>
+    <div class="subtitle">快速登录到内容管理系统</div>
+    
+    <!-- 一键创建 Token -->
+    <div class="section">
+      <div class="section-title">📝 首次使用？创建 GitHub Token</div>
+      <button class="btn-secondary" onclick="createToken()">打开 GitHub 创建 Token</button>
+      <button class="btn-link" onclick="toggleSteps()">查看详细步骤</button>
+      <div id="steps" class="steps">
+        <div style="font-weight: bold; margin-bottom: 8px;">📋 简单3步：</div>
+        <div>1️⃣ 在打开的页面中，Note 填写：<code>Blog CMS</code></div>
+        <div>2️⃣ 勾选权限：<code>repo</code> 和 <code>gist</code></div>
+        <div>3️⃣ 点击底部绿色按钮生成，然后复制 Token 粘贴到下方</div>
+      </div>
+    </div>
+    
+    <!-- Token 登录 -->
+    <div class="section">
+      <div class="section-title">🔑 使用 GitHub Token 登录</div>
+      <input type="password" id="token-input" placeholder="粘贴你的 GitHub Token" />
+      <button class="btn-primary" onclick="loginWithToken()">登录</button>
+      <div id="token-error" class="error"></div>
+      <div id="token-success" class="success"></div>
+    </div>
+  </div>
+  
+  <!-- CMS 容器 -->
+  <div id="cms-container">
+    <div class="loading">正在加载内容管理系统...</div>
+  </div>
+  
+  <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js" type="module"></script>
+  <script>
+    function createToken() {
+      const url = 'https://github.com/settings/tokens/new?' + new URLSearchParams({
+        description: 'Blog CMS - ' + new Date().toLocaleDateString(),
+        scopes: 'repo,gist'
+      }).toString();
+      window.open(url, '_blank');
+      document.getElementById('steps').style.display = 'block';
+    }
+    
+    function toggleSteps() {
+      const steps = document.getElementById('steps');
+      steps.style.display = steps.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    async function loginWithToken() {
+      const token = document.getElementById('token-input').value.trim();
+      const errorDiv = document.getElementById('token-error');
+      const successDiv = document.getElementById('token-success');
+      
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      
+      if (!token) {
+        errorDiv.textContent = '请输入 GitHub Token';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      // 验证 Token
+      try {
+        const response = await fetch('https://api.github.com/user', {
+          headers: {
+            'Authorization': `token ${token}`
+          }
+        });
+        
+        if (!response.ok) {
+          errorDiv.textContent = 'Token 无效，请检查后重试';
+          errorDiv.style.display = 'block';
+          return;
+        }
+        
+        // Token 有效，保存并加载 CMS
+        localStorage.setItem('netlifycms-github-token', token);
+        successDiv.textContent = '✓ 登录成功！正在加载管理系统...';
+        successDiv.style.display = 'block';
+        
+        // 隐藏登录面板，显示 CMS
+        setTimeout(() => {
+          document.getElementById('quick-login-panel').style.display = 'none';
+          document.getElementById('cms-container').style.display = 'block';
+          
+          // 触发 CMS 加载
+          window.location.reload();
+        }, 1000);
+        
+      } catch (error) {
+        errorDiv.textContent = '网络错误：' + error.message;
+        errorDiv.style.display = 'block';
+      }
+    }
+    
+    // 检查是否已登录
+    window.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('netlifycms-github-token');
+      if (token) {
+        // 已有 Token，直接显示 CMS
+        document.getElementById('quick-login-panel').style.display = 'none';
+        document.getElementById('cms-container').style.display = 'block';
+      }
+    });
+    
+    // 监听回车键
+    document.getElementById('token-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        loginWithToken();
+      }
+    });
+  </script>
+</body>
+</html>

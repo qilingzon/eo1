@@ -1,0 +1,296 @@
+---
+/**
+ * 太阳系动画组件 - 支持拖拽互动
+ */
+---
+
+<div class="solar-system-wrapper">
+    <div class="stars"></div>
+    <div class="solar-system" id="solar-system">
+        <div class="sun" id="sun" title="点击重置"></div>
+        <div class="orbit" data-orbit="mercury"></div>
+        <div class="orbit" data-orbit="venus"></div>
+        <div class="orbit" data-orbit="earth"></div>
+        <div class="orbit" data-orbit="mars"></div>
+        <div class="orbit" data-orbit="jupiter"></div>
+        <div class="orbit" data-orbit="saturn"></div>
+        <div class="planet" data-planet="mercury"></div>
+        <div class="planet" data-planet="venus"></div>
+        <div class="planet" data-planet="earth"></div>
+        <div class="planet" data-planet="mars"></div>
+        <div class="planet" data-planet="jupiter"></div>
+        <div class="planet" data-planet="saturn"></div>
+    </div>
+</div>
+
+<style>
+.solar-system-wrapper {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(to bottom, rgba(0,0,20,0.2), rgba(0,0,40,0.5));
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+}
+.stars {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+        radial-gradient(1px 1px at 20px 30px, white, transparent),
+        radial-gradient(1px 1px at 80px 60px, white, transparent),
+        radial-gradient(1px 1px at 140px 90px, white, transparent),
+        radial-gradient(1px 1px at 200px 40px, white, transparent);
+    background-size: 250px 150px;
+}
+.solar-system {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 280px;
+    height: 280px;
+    margin-left: -140px;
+    margin-top: -140px;
+}
+.sun {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin-left: -12px;
+    margin-top: -12px;
+    background: radial-gradient(circle, #fff700, #ff9500, #ff5500);
+    border-radius: 50%;
+    box-shadow: 0 0 20px #ff9500;
+    cursor: pointer;
+    z-index: 10;
+}
+.orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: 50%;
+    pointer-events: none;
+}
+[data-orbit="mercury"] { width: 50px; height: 50px; margin-left: -25px; margin-top: -25px; }
+[data-orbit="venus"] { width: 80px; height: 80px; margin-left: -40px; margin-top: -40px; }
+[data-orbit="earth"] { width: 115px; height: 115px; margin-left: -57.5px; margin-top: -57.5px; }
+[data-orbit="mars"] { width: 150px; height: 150px; margin-left: -75px; margin-top: -75px; }
+[data-orbit="jupiter"] { width: 195px; height: 195px; margin-left: -97.5px; margin-top: -97.5px; }
+[data-orbit="saturn"] { width: 250px; height: 250px; margin-left: -125px; margin-top: -125px; }
+
+.planet {
+    position: absolute;
+    border-radius: 50%;
+    z-index: 5;
+}
+.planet.dragging { cursor: grabbing; box-shadow: 0 0 12px rgba(255,255,255,0.8); }
+
+/* 桌面端显示拖拽光标 */
+@media (min-width: 769px) {
+    .planet { cursor: grab; }
+}
+[data-planet="mercury"] { width: 5px; height: 5px; background: #b5b5b5; }
+[data-planet="venus"] { width: 8px; height: 8px; background: #ffd699; }
+[data-planet="earth"] { width: 10px; height: 10px; background: #6b93d6; }
+[data-planet="mars"] { width: 6px; height: 6px; background: #e27b58; }
+[data-planet="jupiter"] { width: 14px; height: 14px; background: linear-gradient(135deg, #d4a574, #c88b3a); }
+[data-planet="saturn"] { width: 12px; height: 12px; background: #f4d59e; }
+
+@media (min-width: 769px) {
+    .solar-system-wrapper { height: 350px; }
+    .solar-system { width: 400px; height: 400px; margin-left: -200px; margin-top: -200px; }
+    .sun { width: 32px; height: 32px; margin-left: -16px; margin-top: -16px; }
+    [data-orbit="mercury"] { width: 70px; height: 70px; margin-left: -35px; margin-top: -35px; }
+    [data-orbit="venus"] { width: 110px; height: 110px; margin-left: -55px; margin-top: -55px; }
+    [data-orbit="earth"] { width: 160px; height: 160px; margin-left: -80px; margin-top: -80px; }
+    [data-orbit="mars"] { width: 210px; height: 210px; margin-left: -105px; margin-top: -105px; }
+    [data-orbit="jupiter"] { width: 275px; height: 275px; margin-left: -137.5px; margin-top: -137.5px; }
+    [data-orbit="saturn"] { width: 350px; height: 350px; margin-left: -175px; margin-top: -175px; }
+    [data-planet="mercury"] { width: 6px; height: 6px; }
+    [data-planet="venus"] { width: 10px; height: 10px; }
+    [data-planet="earth"] { width: 12px; height: 12px; }
+    [data-planet="mars"] { width: 8px; height: 8px; }
+    [data-planet="jupiter"] { width: 18px; height: 18px; }
+    [data-planet="saturn"] { width: 15px; height: 15px; }
+}
+</style>
+
+<script>
+(function() {
+    var ss = document.getElementById('solar-system');
+    if (!ss) return;
+    
+    var w = window.innerWidth;
+    var mobile = w <= 768;
+    var containerSize = mobile ? 280 : 400;
+    var cx = containerSize / 2;
+    var cy = containerSize / 2;
+    
+    // 行星配置
+    var cfg = {};
+    if (mobile) {
+        cfg.mercury = { r: 25, s: 0.025, a: 0, size: 5 };
+        cfg.venus = { r: 40, s: 0.018, a: 1, size: 8 };
+        cfg.earth = { r: 57.5, s: 0.012, a: 2, size: 10 };
+        cfg.mars = { r: 75, s: 0.009, a: 3, size: 6 };
+        cfg.jupiter = { r: 97.5, s: 0.006, a: 4, size: 14 };
+        cfg.saturn = { r: 125, s: 0.004, a: 5, size: 12 };
+    } else {
+        cfg.mercury = { r: 35, s: 0.025, a: 0, size: 6 };
+        cfg.venus = { r: 55, s: 0.018, a: 1, size: 10 };
+        cfg.earth = { r: 80, s: 0.012, a: 2, size: 12 };
+        cfg.mars = { r: 105, s: 0.009, a: 3, size: 8 };
+        cfg.jupiter = { r: 137.5, s: 0.006, a: 4, size: 18 };
+        cfg.saturn = { r: 175, s: 0.004, a: 5, size: 15 };
+    }
+    
+    var defR = {};
+    defR.mercury = cfg.mercury.r;
+    defR.venus = cfg.venus.r;
+    defR.earth = cfg.earth.r;
+    defR.mars = cfg.mars.r;
+    defR.jupiter = cfg.jupiter.r;
+    defR.saturn = cfg.saturn.r;
+    
+    var drag = null;
+    var planetEls = ss.querySelectorAll('.planet');
+    var animationRunning = false;
+    
+    // 设置行星位置
+    function setPos(el, p) {
+        var x = Math.cos(p.a) * p.r;
+        var y = Math.sin(p.a) * p.r;
+        var left = cx + x - p.size / 2;
+        var top = cy + y - p.size / 2;
+        el.style.left = left + 'px';
+        el.style.top = top + 'px';
+    }
+    
+    // 设置轨道大小
+    function setOrbit(name, r) {
+        var o = ss.querySelector('[data-orbit="' + name + '"]');
+        if (o) {
+            o.style.width = r * 2 + 'px';
+            o.style.height = r * 2 + 'px';
+            o.style.marginLeft = -r + 'px';
+            o.style.marginTop = -r + 'px';
+        }
+    }
+    
+    // 动画循环
+    function animate() {
+        if (!animationRunning) return;
+        
+        var i, el, name, p;
+        for (i = 0; i < planetEls.length; i++) {
+            el = planetEls[i];
+            name = el.getAttribute('data-planet');
+            p = cfg[name];
+            if (el !== drag && p) {
+                p.a = p.a + p.s;
+                setPos(el, p);
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+    
+    // 启动动画
+    function startAnimation() {
+        if (!animationRunning) {
+            animationRunning = true;
+            animate();
+        }
+    }
+    
+    // 停止动画
+    function stopAnimation() {
+        animationRunning = false;
+    }
+    
+    // 获取鼠标/触摸坐标
+    function getXY(e) {
+        var rect = ss.getBoundingClientRect();
+        var clientX, clientY;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+        return {
+            x: clientX - rect.left - cx,
+            y: clientY - rect.top - cy
+        };
+    }
+    
+    // 开始拖拽
+    function startDrag(e) {
+        e.preventDefault();
+        drag = this;
+        this.className = this.className + ' dragging';
+    }
+    
+    // 移动
+    function moveDrag(e) {
+        if (!drag) return;
+        e.preventDefault();
+        var xy = getXY(e);
+        var name = drag.getAttribute('data-planet');
+        var p = cfg[name];
+        var maxR = mobile ? 125 : 175;
+        var dist = Math.sqrt(xy.x * xy.x + xy.y * xy.y);
+        p.r = Math.max(20, Math.min(maxR, dist));
+        p.a = Math.atan2(xy.y, xy.x);
+        setPos(drag, p);
+        setOrbit(name, p.r);
+    }
+    
+    // 结束拖拽
+    function endDrag() {
+        if (drag) {
+            drag.className = drag.className.replace(' dragging', '');
+            drag = null;
+        }
+    }
+    
+    // 只在桌面端启用拖拽功能
+    if (!mobile) {
+        var i;
+        for (i = 0; i < planetEls.length; i++) {
+            planetEls[i].onmousedown = startDrag;
+        }
+        document.onmousemove = moveDrag;
+        document.onmouseup = endDrag;
+        
+        // 重置
+        var sun = document.getElementById('sun');
+        if (sun) {
+            sun.onclick = function() {
+                var name;
+                for (name in defR) {
+                    cfg[name].r = defR[name];
+                    setOrbit(name, defR[name]);
+                }
+            };
+        }
+    }
+    
+    // 初始化行星位置
+    var i, el, name;
+    for (i = 0; i < planetEls.length; i++) {
+        el = planetEls[i];
+        name = el.getAttribute('data-planet');
+        if (cfg[name]) {
+            setPos(el, cfg[name]);
+        }
+    }
+    
+    // 直接启动动画
+    animationRunning = true;
+    animate();
+})();
+</script>

@@ -1,0 +1,54 @@
+﻿---
+/**
+ * 太阳系动画组件
+ * 星空背景 + 可拖拽行星交互
+ */
+---
+
+<div class="solar-system-wrapper">
+    <!-- 星空背景 -->
+    <div class="stars-container">
+        <div class="stars stars-small"></div>
+        <div class="stars stars-medium"></div>
+        <div class="stars stars-large"></div>
+    </div>
+    
+    <!-- 流星 -->
+    <div class="shooting-stars">
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+    </div>
+    
+    <!-- 太阳系 -->
+    <div class="solar-system" id="solar-system">
+        <!-- 太阳 -->
+        <div class="sun" id="sun" title="太阳"></div>
+        
+        <!-- 轨道和行星 -->
+        <div class="orbit" data-orbit="mercury"></div>
+        <div class="planet mercury" id="mercury" data-planet="mercury" title="水星 - 拖拽我！"></div>
+        
+        <div class="orbit" data-orbit="venus"></div>
+        <div class="planet venus" id="venus" data-planet="venus" title="金星 - 拖拽我！"></div>
+        
+        <div class="orbit" data-orbit="earth"></div>
+        <div class="planet earth" id="earth" data-planet="earth" title="地球 - 拖拽我！">
+            <div class="moon"></div>
+        </div>
+        
+        <div class="orbit" data-orbit="mars"></div>
+        <div class="planet mars" id="mars" data-planet="mars" title="火星 - 拖拽我！"></div>
+        
+        <div class="orbit" data-orbit="jupiter"></div>
+        <div class="planet jupiter" id="jupiter" data-planet="jupiter" title="木星 - 拖拽我！"></div>
+        
+        <div class="orbit" data-orbit="saturn"></div>
+        <div class="planet saturn" id="saturn" data-planet="saturn" title="土星 - 拖拽我！">
+            <div class="saturn-ring"></div>
+        </div>
+    </div>
+    
+    <!-- 提示文字 -->
+    <div class="hint-text"> 拖拽行星改变轨道 </div>
+</div>

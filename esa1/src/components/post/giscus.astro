@@ -1,0 +1,97 @@
+---
+/**
+ * Giscus 评论组件
+ * 基于 GitHub Discussions 的评论系统
+ */
+
+interface Props {
+    path?: string;
+}
+
+const { path } = Astro.props;
+---
+
+<div id="giscus-container" class="giscus"></div>
+
+<script is:inline define:vars={{ path }}>
+    function loadGiscus() {
+        const container = document.getElementById('giscus-container');
+        if (!container) return;
+        
+        // 清空容器
+        container.innerHTML = '';
+        
+        // 检测当前主题
+        const isDark = document.documentElement.classList.contains('dark');
+        const theme = isDark ? 'dark' : 'light';
+        
+        // 创建 Giscus script
+        const script = document.createElement('script');
+        script.src = 'https://giscus.app/client.js';
+        script.setAttribute('data-repo', 'qilingzon/esa1');
+        script.setAttribute('data-repo-id', 'R_kgDOQy1NkA');
+        script.setAttribute('data-category', 'Announcements');
+        script.setAttribute('data-category-id', 'DIC_kwDOQy1NkM4C0kKm');
+        script.setAttribute('data-mapping', 'pathname');
+        script.setAttribute('data-strict', '0');
+        script.setAttribute('data-reactions-enabled', '1');
+        script.setAttribute('data-emit-metadata', '0');
+        script.setAttribute('data-input-position', 'top');
+        script.setAttribute('data-theme', theme);
+        script.setAttribute('data-lang', 'zh-CN');
+        script.setAttribute('data-loading', 'lazy');
+        script.crossOrigin = 'anonymous';
+        script.async = true;
+        
+        container.appendChild(script);
+    }
+    
+    // 主题切换时更新 Giscus 主题
+    function updateGiscusTheme() {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        
+        const isDark = document.documentElement.classList.contains('dark');
+        const theme = isDark ? 'dark' : 'light';
+        
+        iframe.contentWindow?.postMessage(
+            { giscus: { setConfig: { theme } } },
+            'https://giscus.app'
+        );
+    }
+    
+    // 监听主题变化
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'class') {
+                updateGiscusTheme();
+            }
+        });
+    });
+    
+    // 页面加载时初始化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            loadGiscus();
+            observer.observe(document.documentElement, { attributes: true });
+        });
+    } else {
+        loadGiscus();
+        observer.observe(document.documentElement, { attributes: true });
+    }
+    
+    // Swup 页面切换后重新加载
+    document.addEventListener('swup:contentReplaced', () => {
+        setTimeout(loadGiscus, 200);
+    });
+</script>
+
+<style>
+    .giscus {
+        width: 100%;
+    }
+    
+    .giscus iframe {
+        width: 100% !important;
+    }
+</style>

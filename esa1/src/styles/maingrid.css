@@ -1,0 +1,193 @@
+/* 手机端无侧边栏布局优化 */
+@media (max-width: 768px) {
+    .mobile-no-sidebar {
+        display: block !important;
+        width: 100% !important;
+    }
+    .mobile-no-sidebar main {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    .mobile-no-sidebar #content-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+
+    /* 修复双侧边栏模式在移动端的布局问题 */
+    .mobile-both-sidebar {
+        /* 确保在移动端使用单列布局 */
+        grid-template-columns: 1fr !important;
+        /* 确保左右padding对称 */
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    /* 确保移动端主内容区域居中且全宽 */
+    .mobile-both-sidebar main {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+    }
+    /* 移动端footer也要居中 */
+    .mobile-both-sidebar .footer {
+        grid-column: 1 / -1 !important;
+    }
+}
+
+/* 小屏手机无侧边栏布局优化 */
+@media (max-width: 512px) {/* 修复双侧边栏模式在移动端的布局问题 */
+    .mobile-both-sidebar {
+        /* 确保在移动端使用单列布局 */
+        grid-template-columns: 1fr !important;
+        /* 确保左右padding对称 */
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+    /* 确保移动端主内容区域居中且全宽 */
+    .mobile-both-sidebar main {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+    }
+    /* 移动端footer也要居中 */
+    .mobile-both-sidebar .footer {
+        grid-column: 1 / -1 !important;
+    }
+}
+
+
+/* 移动端横幅优化 */
+@media (max-width: 1023px) {
+    /* 手机端非首页时主内容区域从顶部开始 */
+    .absolute.w-full.z-30 {
+        /* 移除 will-change 避免滚动时的性能问题 */
+        transition: none;
+    }
+
+    .absolute.w-full.z-30.mobile-main-no-banner {
+        top: 5.5rem !important;
+        min-height: calc(100vh - 5.5rem) !important;
+        transition: none !important;
+    }
+}
+
+/* 移动端横屏优化 */
+@media (max-width: 1023px) and (orientation: landscape) {
+    /* 主内容区域位置调整 - 确保在banner下面，但不影响非首页 */
+    .absolute.w-full.z-30:not(.mobile-main-no-banner) {
+        top: 60vh !important; /* 与banner高度对应 */
+        min-height: calc(100vh - 60vh) !important;
+    }
+}
+
+/* 平板设备横幅优化 */
+@media (min-width: 769px) and (max-width: 1023px) {
+    /* 主内容区域位置调整 - 确保在banner下面 */
+    .absolute.w-full.z-30 {
+        top: 70vh !important; /* 与banner高度对应 */
+        min-height: calc(100vh - 70vh) !important;
+    }
+}
+
+/* 大屏手机端横幅优化 */
+@media (min-width: 513px) and (max-width: 768px) {
+    /* 主内容区域位置调整 - 首页在全屏 banner 下面 */
+    .absolute.w-full.z-30:not(.mobile-main-no-banner):not(.no-banner-layout) {
+        top: 100vh !important;
+        top: 100dvh !important;
+        min-height: 100vh !important;
+    }
+}
+
+/* 小屏手机横幅优化 */
+@media (max-width: 512px) {
+    .absolute.w-full.z-30:not(.mobile-main-no-banner):not(.no-banner-layout) {
+        top: 100vh !important;
+        top: 100dvh !important;
+        min-height: 100vh !important;
+    }
+}
+
+/* 当banner被禁用时的布局样式 */
+.no-banner-layout {
+    top: 5.5rem !important;
+    min-height: calc(100vh - 5.5rem) !important;
+}
+
+/* 移动端当banner被禁用时的布局样式 */
+@media (max-width: 1023px) {
+    .absolute.w-full.z-30.no-banner-layout {
+        top: 5.5rem !important;
+        min-height: calc(100vh - 5.5rem) !important;
+        transition: none !important; /* 移除过渡动画，立即应用位置 */
+    }
+}
+
+/* 平板设备当banner被禁用时的布局样式 */
+@media (min-width: 769px) and (max-width: 1023px) {
+    .absolute.w-full.z-30.no-banner-layout {
+        top: 5.5rem !important;
+        min-height: calc(100vh - 5.5rem) !important;
+        transition: none !important;
+    }
+}
+
+/* 小屏手机当banner被禁用时的布局样式 */
+@media (max-width: 512px) {
+    .absolute.w-full.z-30.no-banner-layout {
+        top: 5.5rem !important;
+        min-height: calc(100vh - 5.5rem) !important;
+        transition: none !important;
+    }
+}
+
+/* 手机端全屏壁纸 - 滑动后显示（仅在 banner 模式下生效） */
+@media (max-width: 1023px) {
+    .mobile-fullscreen-wallpaper {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        /* 确保高清显示，不模糊 */
+        filter: none !important;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+        /* 确保在所有内容后面 */
+        z-index: -10 !important;
+    }
+    
+    .mobile-fullscreen-wallpaper.show {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    /* 确保全屏壁纸图片高清 */
+    .mobile-fullscreen-wallpaper img {
+        filter: none !important;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* 桌面端：mobile-fullscreen-wallpaper 类默认隐藏，但通过 JS 切换到全屏模式时会移除 hidden 类显示 */
+@media (min-width: 1024px) {
+    .mobile-fullscreen-wallpaper {
+        /* 默认隐藏，等待用户切换到全屏壁纸模式 */
+        opacity: 0;
+        visibility: hidden;
+    }
+    
+    /* 当用户切换到全屏壁纸模式时，JS 会移除 hidden 类并添加 opacity-100 */
+    .mobile-fullscreen-wallpaper.opacity-100 {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* 兼容：当没有 hidden 类时显示 */
+    .mobile-fullscreen-wallpaper:not(.hidden) {
+        opacity: 1;
+        visibility: visible;
+    }
+}
