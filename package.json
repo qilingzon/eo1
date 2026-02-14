@@ -2,7 +2,7 @@
 	"name": "twilight",
 	"type": "module",
 	"version": "1.0.0",
-	"description": "A blog template",
+	"description": "生活随笔分享",
 	"scripts": {
 		"type-check": "tsc --noEmit --isolatedDeclarations",
 		"check-stylus": "node scripts/compile-inline-stylus.cjs",

@@ -1,8 +1,8 @@
 <div align = "center">
 
-# Twilight
+# 生活随笔分享
 
-A CMS integrated static blog template built with [Astro](https://astro.build) framework.
+一个基于 [Astro](https://astro.build) 框架的 CMS 集成静态博客模板。
 
 [![Bilibili](https://img.shields.io/badge/Bilibili-v1.0%20Intro-blue?logo=Bilibili&style=for-the-badge)](https://www.bilibili.com/video/BV18VsUzNEmL)&nbsp;
 [![YouTube](https://img.shields.io/badge/YouTube-v1.0%20Intro-red?logo=YouTube&style=for-the-badge)](https://www.youtube.com/watch?v=SdpYpg_EzNg)

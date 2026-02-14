@@ -32,7 +32,7 @@ export const siteConfig: SiteConfig = {
     // 站点标题
     title: "生活随笔分享",
     // 站点副标题
-    subtitle: "Blog Template",
+    subtitle: "记录生活与思考",
     // 语言配置
     lang: SITE_LANG, // 自动检测的浏览器语言
     // 翻译配置
