@@ -37,7 +37,7 @@ const getSortUrl = (type: string, descending: boolean) => {
             title="按标题排序"
             aria-label="按标题排序"
         >
-            <Icon name="material-symbols:sort-by-alpha-rounded" class="text-xl" />
+            <Icon name="material-symbols:notes-rounded" class="text-xl" />
         </a>
     </div>
     <a
@@ -47,7 +47,7 @@ const getSortUrl = (type: string, descending: boolean) => {
         aria-label="切换正序倒序"
     >
         <Icon
-            name="material-symbols:arrow-downward-rounded"
+            name="material-symbols:keyboard-arrow-down-rounded"
             class:list={["text-xl transition-transform", { "rotate-180": !isDescending }]}
         />
         <span class="text-sm font-medium">{isDescending ? "倒序" : "正序"}</span>
