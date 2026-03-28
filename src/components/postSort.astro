@@ -14,6 +14,8 @@ const { class: className, style, sort } = Astro.props;
 const isDate = !sort || sort.startsWith("date");
 const isAlpha = sort?.startsWith("alpha");
 const isDescending = !sort || sort.endsWith("desc");
+const currentSortText = isDate ? "发布时间" : "标题";
+const currentOrderText = isDescending ? "倒序" : "正序";
 
 const getSortUrl = (type: string, descending: boolean) => {
     if (type === "date" && descending) return "/";
@@ -22,6 +24,9 @@ const getSortUrl = (type: string, descending: boolean) => {
 ---
 
 <div class:list={["post-sort-container flex flex-wrap items-center gap-2 mb-4 text-neutral-700 dark:text-neutral-300", className]} style={style}>
+    <div class="text-xs font-medium text-black/60 dark:text-white/60 px-1">
+        当前：{currentSortText} · {currentOrderText}
+    </div>
     <div class="flex bg-[var(--card-bg)] rounded-lg p-1 shadow-sm border border-white/5">
         <a
             href={url(getSortUrl("date", isDescending))}
@@ -30,6 +35,7 @@ const getSortUrl = (type: string, descending: boolean) => {
             aria-label="按发布日期排序"
         >
             <Icon name="material-symbols:schedule-outline-rounded" class="text-xl" />
+            <span class="sort-label">时间</span>
         </a>
         <a
             href={url(getSortUrl("alpha", isDescending))}
@@ -38,6 +44,7 @@ const getSortUrl = (type: string, descending: boolean) => {
             aria-label="按标题排序"
         >
             <Icon name="material-symbols:notes-rounded" class="text-xl" />
+            <span class="sort-label">标题</span>
         </a>
     </div>
     <a
@@ -56,10 +63,14 @@ const getSortUrl = (type: string, descending: boolean) => {
 
 <style>
     .sort-btn {
-        @apply p-1.5 rounded-md transition-all flex items-center justify-center hover:bg-white/5 active:scale-90;
+        @apply px-2.5 h-9 rounded-md transition-all flex items-center gap-1.5 justify-center hover:bg-white/5 active:scale-90;
     }
 
     .sort-btn.active {
         @apply bg-[var(--primary)] text-white dark:text-black/80 shadow-sm hover:bg-[var(--primary)];
+    }
+
+    .sort-label {
+        @apply text-xs font-semibold;
     }
 </style>

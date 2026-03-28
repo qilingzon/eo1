@@ -12,6 +12,15 @@ import MainGridLayout from "@layouts/MainGridLayout.astro";
 // Bangumi API配置
 const BANGUMI_USER_ID = siteConfig.bangumi?.userId || "your-user-id"; // 用户ID
 const BANGUMI_API_BASE = "https://api.bgm.tv";
+const BANGUMI_PLACEHOLDER_IDS = new Set([
+    "your-user-id",
+    "your-bangumi-id",
+    "your-bangumi-id-here",
+]);
+const hasValidBangumiUserId =
+    typeof BANGUMI_USER_ID === "string" &&
+    BANGUMI_USER_ID.trim().length > 0 &&
+    !BANGUMI_PLACEHOLDER_IDS.has(BANGUMI_USER_ID.trim().toLowerCase());
 
 // 获取单个条目相关人员信息
 async function fetchSubjectPersons(subjectId: number) {
@@ -19,10 +28,13 @@ async function fetchSubjectPersons(subjectId: number) {
         const response = await fetch(
             `${BANGUMI_API_BASE}/v0/subjects/${subjectId}/persons`,
         );
+        if (!response.ok) {
+            return [];
+        }
         const data = await response.json();
         return Array.isArray(data) ? data : [];
     } catch (error) {
-        console.error(`Error fetching subject ${subjectId} persons:`, error);
+        console.warn(`Bangumi 人员信息获取失败: subject=${subjectId}`);
         return [];
     }
 }
@@ -45,7 +57,8 @@ async function fetchBangumiCollection(
                 `${BANGUMI_API_BASE}/v0/users/${userId}/collections?subject_type=${subjectType}&type=${type}&limit=${limit}&offset=${offset}`,
             );
             if (!response.ok) {
-                throw new Error(`Bangumi API error: ${response.status}`);
+                console.warn(`Bangumi API 返回异常: status=${response.status}, user=${userId}`);
+                return null;
             }
             const data = await response.json();
 
@@ -63,7 +76,7 @@ async function fetchBangumiCollection(
         }
         return { data: allData };
     } catch (error) {
-        console.error("Error fetching Bangumi data:", error);
+        console.warn("Bangumi 数据获取失败，已回退为空列表。");
         return null;
     }
 }
@@ -128,8 +141,12 @@ async function processBangumiData(data: any, status: string) {
 }
 
 // 获取Bangumi番剧列表
-const watchingData = await fetchBangumiCollection(BANGUMI_USER_ID, 2, 3);
-const completedData = await fetchBangumiCollection(BANGUMI_USER_ID, 2, 2);
+const watchingData = hasValidBangumiUserId
+    ? await fetchBangumiCollection(BANGUMI_USER_ID, 2, 3)
+    : null;
+const completedData = hasValidBangumiUserId
+    ? await fetchBangumiCollection(BANGUMI_USER_ID, 2, 2)
+    : null;
 
 const watchingList = watchingData
     ? await processBangumiData(watchingData, "watching")
@@ -246,7 +263,7 @@ const stats = {
                     {i18n(I18nKey.animeList)}
                 </h2>
 
-                {BANGUMI_USER_ID === 'your-user-id' ? (
+                {!hasValidBangumiUserId ? (
                     <div class="text-center py-12">
                         <div class="text-5xl mb-4">😢</div>
                         <h3 class="text-xl font-medium text-black/80 dark:text-white/80 mb-2">

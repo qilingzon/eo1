@@ -94,6 +94,11 @@ const prefix = sort ? `/${sort}` : "";
 </div>
 
 <script is:inline define:vars={{ lastPage: page.lastPage, prefix }}>
+    if (window.__eoPaginationJumpController) {
+        window.__eoPaginationJumpController.abort();
+    }
+    window.__eoPaginationJumpController = new AbortController();
+
     function initJumpButtons() {
         const buttons = document.querySelectorAll(".jump-btn");
         buttons.forEach((button) => {
@@ -101,7 +106,7 @@ const prefix = sort ? `/${sort}` : "";
                 const target = window.prompt(`请输入要跳转的页码 (1-${lastPage}):`);
                 if (!target) return;
 
-                const pageNum = Number.parseInt(target, 10);
+                const pageNum = Number.parseInt(target.trim(), 10);
                 if (Number.isNaN(pageNum) || pageNum < 1 || pageNum > lastPage) {
                     window.alert("请输入有效页码");
                     return;
@@ -122,5 +127,7 @@ const prefix = sort ? `/${sort}` : "";
     }
 
     initJumpButtons();
-    document.addEventListener("swup:contentReplaced", initJumpButtons);
+    document.addEventListener("swup:contentReplaced", initJumpButtons, {
+        signal: window.__eoPaginationJumpController.signal,
+    });
 </script>
