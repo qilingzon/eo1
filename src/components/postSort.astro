@@ -1,0 +1,65 @@
+---
+import { Icon } from "astro-icon/components";
+
+import { url } from "@utils/url-utils";
+
+interface Props {
+    class?: string;
+    style?: string;
+    sort?: string;
+}
+
+const { class: className, style, sort } = Astro.props;
+
+const isDate = !sort || sort.startsWith("date");
+const isAlpha = sort?.startsWith("alpha");
+const isDescending = !sort || sort.endsWith("desc");
+
+const getSortUrl = (type: string, descending: boolean) => {
+    if (type === "date" && descending) return "/";
+    return `/${type}-${descending ? "desc" : "asc"}/`;
+};
+---
+
+<div class:list={["post-sort-container flex flex-wrap items-center gap-2 mb-4 text-neutral-700 dark:text-neutral-300", className]} style={style}>
+    <div class="flex bg-[var(--card-bg)] rounded-lg p-1 shadow-sm border border-white/5">
+        <a
+            href={url(getSortUrl("date", isDescending))}
+            class:list={["sort-btn", { "active": isDate }]}
+            title="按发布日期排序"
+            aria-label="按发布日期排序"
+        >
+            <Icon name="material-symbols:schedule-outline-rounded" class="text-xl" />
+        </a>
+        <a
+            href={url(getSortUrl("alpha", isDescending))}
+            class:list={["sort-btn", { "active": isAlpha }]}
+            title="按标题排序"
+            aria-label="按标题排序"
+        >
+            <Icon name="material-symbols:sort-by-alpha-rounded" class="text-xl" />
+        </a>
+    </div>
+    <a
+        href={url(getSortUrl(isDate ? "date" : "alpha", !isDescending))}
+        class="btn-regular px-3 h-9 rounded-lg flex items-center gap-1 active:scale-95 transition"
+        title="切换正序倒序"
+        aria-label="切换正序倒序"
+    >
+        <Icon
+            name="material-symbols:arrow-downward-rounded"
+            class:list={["text-xl transition-transform", { "rotate-180": !isDescending }]}
+        />
+        <span class="text-sm font-medium">{isDescending ? "倒序" : "正序"}</span>
+    </a>
+</div>
+
+<style>
+    .sort-btn {
+        @apply p-1.5 rounded-md transition-all flex items-center justify-center hover:bg-white/5 active:scale-90;
+    }
+
+    .sort-btn.active {
+        @apply bg-[var(--primary)] text-white dark:text-black/80 shadow-sm hover:bg-[var(--primary)];
+    }
+</style>
